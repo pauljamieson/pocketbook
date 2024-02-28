@@ -2,7 +2,7 @@
 import { useSession } from "next-auth/react";
 import React from "react";
 
-export default function page() {
+export default function Page() {
   const { data: session } = useSession();
   if (!session || !session.user)
     return <div className="text-red-600">You must login to use this page!</div>;

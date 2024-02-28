@@ -12,7 +12,7 @@ const credentialsConfig = CredentialsProvider({
   async authorize(credentials) {
     // add logic to check if user exists in DB and password is valid
     if (credentials.username === "paul" && credentials.password === "123") {
-      return { name: "Paul" };
+      return { name: "Paul2" };
     }
     // invalid creds
     else return null;
@@ -23,11 +23,14 @@ const config = {
   providers: [Google, credentialsConfig],
   callbacks: {
     authorized({ request, auth }) {
+      console.log(auth);
       const { pathname } = request.nextUrl;
       if (pathname === "/middlewarepage") return !!auth;
       return true;
     },
   },
+  trustHost: true,
+  secret: "yabbadabbado",
 } satisfies NextAuthConfig;
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
