@@ -7,40 +7,96 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model accounts {
-  id                Int     @id @default(autoincrement())
-  userId            Int
-  type              String  @db.VarChar(255)
-  provider          String  @db.VarChar(255)
-  providerAccountId String  @db.VarChar(255)
+model User {
+  id            String          @id @default(cuid())
+  name          String?
+  email         String          @unique
+  emailVerified DateTime?
+  image         String?
+  financial_accounts FinancialAccount[]
+  accounts      Account[]
+  sessions      Session[]
+
+  // Optional for WebAuthn support
+  Authenticator Authenticator[]
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
   refresh_token     String?
   access_token      String?
-  expires_at        BigInt?
-  id_token          String?
-  scope             String?
-  session_state     String?
+  expires_at        Int?
   token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([provider, providerAccountId])
 }
-
-model sessions {
-  id           Int      @id @default(autoincrement())
-  userId       Int
-  expires      DateTime @db.Timestamptz(6)
-  sessionToken String   @db.VarChar(255)
+ 
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-
-model users {
-  id            Int       @id @default(autoincrement())
-  name          String?   @db.VarChar(255)
-  email         String?   @db.VarChar(255)
-  emailVerified DateTime? @db.Timestamptz(6)
-  image         String?
-}
-
-model verification_token {
+ 
+model VerificationToken {
   identifier String
-  expires    DateTime @db.Timestamptz(6)
   token      String
-
+  expires    DateTime
+ 
   @@id([identifier, token])
+}
+ 
+// Optional for WebAuthn support
+model Authenticator {
+  credentialID         String  @unique
+  userId               String
+  providerAccountId    String
+  credentialPublicKey  String
+  counter              Int
+  credentialDeviceType String
+  credentialBackedUp   Boolean
+  transports           String?
+ 
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+  @@id([userId, credentialID])
+}
+ 
+
+
+
+
+model FinancialAccount {
+  id           Int         @id @default(autoincrement())
+  name         String
+  type         AccountType
+  value        Decimal     @db.Decimal(10, 2)
+  limit        Decimal     @db.Decimal(10, 2)
+  interestRate Decimal     @db.Decimal(5, 2)
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+}
+
+enum AccountType {
+  SAVINGS
+  CHEQUING
+  CREDITCARD
+  LOAN
 }

@@ -2,3 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+@layer components {
+  .btn {
+    background-color: theme("colors.blue.400");
+    border-radius: theme("borderRadius.lg");
+    padding: 5px;
+    box-shadow: theme("boxShadow.xl");
+  }
+
+  .btn:hover {
+    background-color: theme("colors.blue.500");
+  }
+
+  .btn:active {
+    background-color: theme("colors.blue.800");
+  }
+}
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+h1 {
+  font-size: 1.5rem;
+}
