@@ -193,7 +193,7 @@ function _formatTag(tag) {
   return tag.toUpperCase();
 }
 
-function parseMsMoneyOFX(filedata) {
+export function parseMsMoneyOFX(filedata) {
   const header = _getOfxHeader(filedata);
   const signOnMsg = _getSignOnMsg(filedata);
   const creditcardMsgSrsV1 = _getCreditcardMsgSrsV1(filedata);

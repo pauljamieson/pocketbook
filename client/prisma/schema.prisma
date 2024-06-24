@@ -23,6 +23,7 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
 model Account {
   userId            String
   type              String
@@ -78,12 +79,8 @@ model Authenticator {
   @@id([userId, credentialID])
 }
  
-
-
-
-
 model FinancialAccount {
-  id           Int         @id @default(autoincrement())
+  id           String      @id @default(cuid())
   name         String
   type         AccountType
   value        Decimal     @db.Decimal(10, 2)
@@ -91,7 +88,7 @@ model FinancialAccount {
   interestRate Decimal     @db.Decimal(5, 2)
   userId       String
   user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  accountEntries AccountEntry[]
 }
 
 enum AccountType {
@@ -99,4 +96,21 @@ enum AccountType {
   CHEQUING
   CREDITCARD
   LOAN
+}
+
+model AccountEntry {
+  id Int @id @default(autoincrement())
+  transactionType TransactionType
+  transactionAmount Decimal @db.Decimal(10,2)
+  datePosted BigInt
+  financialId String @unique
+  name String
+  memo String?
+  account FinancialAccount @relation(fields: [financialAccount], references: [id])
+  financialAccount String
+}
+
+enum TransactionType {
+  DEBIT
+  CREDIT
 }
