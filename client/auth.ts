@@ -11,7 +11,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [Google],
   callbacks: {
     session({ session, token }) {
-      console.log("t: ", token);
       session.userId = session.user.id;
       return session;
     },

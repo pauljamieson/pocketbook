@@ -12,7 +12,6 @@ export default async function page() {
       userId: session?.user?.id,
     },
   });
-  console.log(accounts);
   return (
     <div className="flex flex-col gap-2 overflow-auto">
       <UserBar />

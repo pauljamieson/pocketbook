@@ -40,32 +40,39 @@ export async function uploadOfxFile(
   prevState: any,
   formData: FormData
 ): Promise<any> {
-  console.log(formData.getAll("file"));
   const file = formData.get("file") as File;
   const id = formData.get("id") as string;
-  console.log(id);
-  const text = await file.text();
-  const uploadData = parseMsMoneyOFX(text);
+
+  const uploadData = parseMsMoneyOFX(await file.text());
   let transactions = undefined;
 
-  if ("ccstmtrs" in uploadData)
-    transactions = uploadData.ccstmtrs.banktranlist.stmttrns;
-  if ("stmtrs" in uploadData)
+  if ("stmtrs" in uploadData) {
     transactions = uploadData.stmtrs.banktranlist.stmttrns;
-  transactions?.forEach(async (val) => {
-    const result = await prisma.accountEntry.create({
-      data: {
-        transactionType: val.trntype,
-        transactionAmount: val.trnamt,
-        datePosted: parseInt(val.dtposted),
-        financialId: val.fitid,
-        name: val.name,
-        memo: val.memo,
-        financialAccount: id,
-      },
-    });
-    console.log(result);
-  });
+  }
 
-  return { status: "success" };
+  if ("ccstmtrs" in uploadData) {
+    transactions = uploadData.ccstmtrs.banktranlist.stmttrns;
+  }
+  if (!transactions) return { status: "success", message: "No transactions" };
+
+  const createData = transactions?.map((val: any) => ({
+    transactionType: val.trntype,
+    transactionAmount: val.trnamt,
+    datePosted: parseInt(val.dtposted),
+    financialId: val.fitid,
+    name: val.name,
+    memo: val.memo,
+    financialAccount: id,
+  }));
+
+  try {
+    await prisma.accountEntry.createMany({
+      data: createData,
+    });
+
+    return { status: "success" };
+  } catch (error) {
+    console.error(error);
+    return { status: "success" };
+  }
 }

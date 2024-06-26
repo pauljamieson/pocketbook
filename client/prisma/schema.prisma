@@ -103,11 +103,13 @@ model AccountEntry {
   transactionType TransactionType
   transactionAmount Decimal @db.Decimal(10,2)
   datePosted BigInt
-  financialId String @unique
+  financialId String
   name String
   memo String?
   account FinancialAccount @relation(fields: [financialAccount], references: [id])
   financialAccount String
+
+  @@unique([financialId, financialAccount])
 }
 
 enum TransactionType {

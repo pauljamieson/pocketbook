@@ -3,7 +3,6 @@ import React from "react";
 
 export default async function AppBar() {
   const session = await auth();
-  //console.log(session);
   async function signInAction() {
     "use server";
     await signIn("google", { redirectTo: "/" });

@@ -76,7 +76,11 @@ export default function CreateAccount() {
             step="0.01"
           />
           {session.status !== "loading" && (
-            <input type="hidden" name="user-id" value={session?.data?.userId} />
+            <input
+              type="hidden"
+              name="user-id"
+              value={session?.data?.user?.id}
+            />
           )}
           <div className="flex gap-2 justify-center">
             <button className="btn w-20" onClick={onClose}>

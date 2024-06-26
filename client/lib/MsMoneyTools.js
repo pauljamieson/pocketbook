@@ -147,30 +147,37 @@ function _getBankTranList(data) {
 function _getStmttrns(data) {
   const stmts = [];
   let pos = data.indexOf("<STMTTRN>");
+
   while (pos !== 9) {
-    // -1 for not found + 10 = -9
+    // -1 for not found + 10 = 9
     const stmtText = data.slice(pos, data.indexOf("</STMTTRN>", pos) + 10);
+
     let memo = "";
     try {
       memo = _getUnclosedTag("MEMO", stmtText);
     } catch (err) {}
-    const stmt = {
-      trntype: _getUnclosedTag("TRNTYPE", stmtText),
-      dtposted: _getUnclosedTag("DTPOSTED", stmtText),
-      trnamt: _getUnclosedTag("TRNAMT", stmtText),
-      fitid: _getUnclosedTag("FITID", stmtText),
-      name: _getUnclosedTag("NAME", stmtText),
-      memo,
-    };
+    let stmt = {};
+    try {
+      stmt = {
+        trntype: _getUnclosedTag("TRNTYPE", stmtText),
+        dtposted: _getUnclosedTag("DTPOSTED", stmtText),
+        trnamt: _getUnclosedTag("TRNAMT", stmtText),
+        fitid: _getUnclosedTag("FITID", stmtText),
+        name: _getUnclosedTag("NAME", stmtText),
+        memo,
+      };
+    } catch (err) {
+      console.log(err);
+    }
     stmts.push(stmt);
-    pos = data.indexOf("<STMTTRN>", pos) + 10;
+    pos = data.indexOf("<STMTTRN>", pos + 10) + 10;
   }
   return stmts;
 }
 
 function _getUnclosedTag(tag, text) {
   tag = _formatTag(tag);
-  if (text.indexOf(tag) === -1) throw "Tag does not exist : " + tag;
+  if (text.indexOf(tag) === -1) throw "Unclosed Tag does not exist : " + tag;
   return text.slice(
     text.indexOf(tag) + tag.length,
     text.indexOf("\n", text.indexOf(tag))
@@ -179,7 +186,7 @@ function _getUnclosedTag(tag, text) {
 
 function _getClosedTag(tag, text) {
   tag = _formatTag(tag);
-  if (text.indexOf(tag) === -1) throw "Tag does not exist : " + tag;
+  if (text.indexOf(tag) === -1) throw "Closed Tag does not exist : " + tag;
   const endMarker = tag.substr(0, 1) + "/" + tag.substr(1);
   return text.slice(
     text.indexOf(tag),

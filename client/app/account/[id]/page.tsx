@@ -10,6 +10,9 @@ export default async function page({ params }: { params: { id: string } }) {
   const accountInfo = await prisma.financialAccount.findFirst({
     where: { id },
   });
+  const entries = await prisma.accountEntry.findMany({
+    where: { financialAccount: id },
+  });
 
   const sample = {
     id: "clxqu22nq00028nar0vb7rzii",
@@ -32,7 +35,14 @@ export default async function page({ params }: { params: { id: string } }) {
         <p>Limit: ${Number(accountInfo?.limit).toFixed(2)}</p>
         <p>Interest Rate: {Number(accountInfo?.interestRate)?.toFixed(2)}%</p>
       </div>
-      <FileUploadForm id={id}/>
+      <FileUploadForm id={id} />
+      <div>
+        {entries?.map((entry) => (
+          <p>
+            {entry.transactionType} - {Number(entry.transactionAmount)}
+          </p>
+        ))}
+      </div>
     </div>
   );
 }
