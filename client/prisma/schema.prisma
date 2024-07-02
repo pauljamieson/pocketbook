@@ -87,7 +87,7 @@ model FinancialAccount {
   limit        Decimal     @db.Decimal(10, 2)
   interestRate Decimal     @db.Decimal(5, 2)
   userId       String
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User        @relation(fields: [userId], references: [id], onDelete: NoAction)
   accountEntries AccountEntry[]
 }
 
@@ -106,7 +106,7 @@ model AccountEntry {
   financialId String
   name String
   memo String?
-  account FinancialAccount @relation(fields: [financialAccount], references: [id])
+  account FinancialAccount @relation(fields: [financialAccount], references: [id], onDelete: Cascade)
   financialAccount String
 
   @@unique([financialId, financialAccount])

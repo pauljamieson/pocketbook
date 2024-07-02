@@ -1,4 +1,5 @@
 import { auth, signIn, signOut } from "@/auth";
+import Link from "next/link";
 import React from "react";
 
 export default async function AppBar() {
@@ -15,7 +16,9 @@ export default async function AppBar() {
 
   return (
     <div className="h-16 w-full bg-blue-700 flex items-center p-2">
-      <h1 className="uppercase font-bold">PocketBook</h1>
+      <Link href={"/"}>
+        <h1 className="uppercase font-bold">PocketBook</h1>
+      </Link>
       <div className="grow" />
       <nav>
         <ol>
