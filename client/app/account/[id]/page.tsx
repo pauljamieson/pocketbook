@@ -1,9 +1,11 @@
 import DeleteFinancialAccount from "@/components/DeleteFinancialAccount";
+import EntryRow from "@/components/EntryRow";
 import FileUploadForm from "@/components/FileUploadForm";
 import prisma from "@/lib/prisma";
-import { AccountEntry, Prisma } from "@prisma/client";
+import { AccountEntry } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
-import { validateHeaderName } from "http";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 
 interface Entry extends AccountEntry {
@@ -96,25 +98,7 @@ export default async function page({ params }: { params: { id: string } }) {
         </thead>
         <tbody className="cursor-pointer">
           {prepEntries(entries, balance).map((row, idx) => (
-            <tr key={idx} className={`text-sm ${rowStyle}`}>
-              <td >{formatDate(row.datePosted)}</td>
-              <td className="line-clamp-1">{row.name}</td>
-              <td >
-                {row.transactionType === "DEBIT" &&
-                  Math.abs(Number(row.transactionAmount)).toFixed(2)}
-              </td>
-              <td >
-                {row.transactionType === "CREDIT" &&
-                  Math.abs(Number(row.transactionAmount)).toFixed(2)}
-              </td>
-              <td className="hidden xs:block">
-                {row.balance.toFixed(2) === "0.00" ? (
-                  <div>&nbsp;</div>
-                ) : (
-                  row.balance.toFixed(2)
-                )}
-              </td>
-            </tr>
+            <EntryRow row={row} idx={idx} />
           ))}
         </tbody>
       </table>
