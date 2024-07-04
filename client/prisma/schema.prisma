@@ -132,6 +132,7 @@ model EntryCategory {
   userId       String
   user         User        @relation(fields: [userId], references: [id], onDelete: NoAction)
   accountEntry AccountEntry[]
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

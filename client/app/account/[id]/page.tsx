@@ -4,8 +4,6 @@ import FileUploadForm from "@/components/FileUploadForm";
 import prisma from "@/lib/prisma";
 import { AccountEntry } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
-import Link from "next/link";
-import { redirect } from "next/navigation";
 import React from "react";
 
 interface Entry extends AccountEntry {
@@ -25,17 +23,6 @@ export default async function page({ params }: { params: { id: string } }) {
     orderBy: { datePosted: "desc" },
   });
 
-  function formatDate(date: bigint) {
-    return (
-      date.toString().slice(0, 4) +
-      "/" +
-      date.toString().slice(4, 6) +
-      "/" +
-      date.toString().slice(6, 8)
-    );
-  }
-
-  prepEntries(entries, balance);
 
   function prepEntries(
     entries: AccountEntry[],
